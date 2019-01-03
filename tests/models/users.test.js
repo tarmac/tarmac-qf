@@ -1,5 +1,5 @@
-const db = require('../models')
-const Util = require('./testUtil.js')
+const db = require('../../models')
+const Util = require('../testUtil.js')
 
 const { User, Sequelize } = db
 
@@ -8,9 +8,9 @@ beforeAll(async () => {
 })
 
 afterAll(() => {
-  db.sequelize.close().then(() => {
-    console.log('Shut down gracefully')
-  })
+  // db.sequelize.close().then(() => {
+  //   console.log('Shut down gracefully')
+  // })
 })
 
 describe('User Model', () => {

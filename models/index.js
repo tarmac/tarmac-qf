@@ -31,6 +31,15 @@ fs
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
     db[modelName].associate(db)
+    // This overridee the toJSON on every entity to exclude internal attributes
+    db[modelName].prototype.toJSON = function toJSON() {
+      const exclude = ['createdAt', 'updatedAt', 'deletedAt']
+      const values = Object.assign({}, this.dataValues)
+      exclude.forEach((key) => {
+        delete values[key]
+      })
+      return values
+    }
   }
 })
 

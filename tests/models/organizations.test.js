@@ -1,18 +1,18 @@
-const db = require('../models')
+const db = require('../../models')
 
 const { Organization } = db
-const Util = require('./testUtil.js')
+const Util = require('../testUtil.js')
 
 beforeAll(async () => {
   // Code that runs before every test goes here
 })
 
 afterAll(() => {
-  db.sequelize.close().then(() => console.log('Shut down gracefully'))
+  // db.sequelize.close().then(() => console.log('Shut down gracefully'))
 })
 
 describe('Organization Model', () => {
-  const requiredFields = ['name', 'status']
+  const requiredFields = ['name', 'status', 'domains']
   requiredFields.forEach((field) => {
     test(`Organization should require a ${field}`, (done) => {
       saveOrganizationWithoutField(field, done)

@@ -1,4 +1,6 @@
+const assert = require('assert')
 const db = require('../models')
+
 
 const { User, Organization } = db
 
@@ -11,11 +13,22 @@ module.exports = {
     }
     return text
   },
+  validateSchema(object, schema) {
+    const objectKeys = Object.keys(object).sort()
+    const schemaKeys = Object.keys(schema).sort()
+    const msg = `objectKeys: [${objectKeys}] does not equals schemaKeys: [${schemaKeys}]`
+    assert.equal(JSON.stringify(objectKeys), JSON.stringify(schemaKeys), msg)
+  },
   buildTestOrganization() {
     return Organization.build({
       name: this.randomString(),
       status: 'APPROVED',
-    })
+      domains: [
+        {
+          domain: this.randomString(),
+        },
+      ],
+    }, { include: ['domains'] })
   },
   async createTestOrganization() {
     return this.buildTestOrganization().save()
