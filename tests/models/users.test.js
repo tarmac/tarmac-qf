@@ -17,8 +17,8 @@ describe('User Model', () => {
   // Test required fields
   const requiredFields = ['firstName', 'lastName', 'email', 'password', 'slackName', 'organizationId']
   requiredFields.forEach((field) => {
-    test(`User should require a  ${field}`, (done) => {
-      saveUserWithoutField(field, done)
+    test(`User should require a  ${field}`, async (done) => {
+      Util.saveObjectWithoutField(await Util.buildTestUser(), field, done)
     })
   })
 
@@ -80,18 +80,3 @@ describe('User Model', () => {
     done()
   })
 })
-
-async function saveUserWithoutField(field, done) {
-  const user = await Util.buildTestUser()
-  user[field] = null
-
-  expect.assertions(3)
-  try {
-    await user.validate()
-  } catch (err) {
-    expect(err.name).toEqual('SequelizeValidationError')
-    expect(err.errors.length).toBe(1)
-    expect(err.errors[0].path).toEqual(field)
-    done()
-  }
-}
