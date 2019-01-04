@@ -29,6 +29,7 @@
         "no-unused-vars": "off",
         "no-console": "off",
         "arrow-body-style": "off",
-        "no-use-before-define": "off"
+        "no-use-before-define": "off",
+        "no-param-reassign": "off"
     }
 }

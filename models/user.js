@@ -44,6 +44,12 @@ module.exports = (sequelize, DataTypes) => {
         len: [1, 50],
       },
     },
+    pictureUrl: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: true,
+      },
+    },
   },
   {
     tableName: 'users',

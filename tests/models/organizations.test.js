@@ -14,8 +14,8 @@ afterAll(() => {
 describe('Organization Model', () => {
   const requiredFields = ['name', 'status', 'domains']
   requiredFields.forEach((field) => {
-    test(`Organization should require a ${field}`, (done) => {
-      saveOrganizationWithoutField(field, done)
+    test(`Organization should require a ${field}`, async (done) => {
+      Util.saveObjectWithoutField(await Util.buildTestOrganization(), field, done)
     })
   })
 
@@ -30,18 +30,3 @@ describe('Organization Model', () => {
     done()
   })
 })
-
-async function saveOrganizationWithoutField(field, done) {
-  const organization = await Util.buildTestOrganization()
-  organization[field] = null
-
-  expect.assertions(3)
-  try {
-    await organization.validate()
-  } catch (err) {
-    expect(err.name).toEqual('SequelizeValidationError')
-    expect(err.errors.length).toBe(1)
-    expect(err.errors[0].path).toEqual(field)
-    done()
-  }
-}
