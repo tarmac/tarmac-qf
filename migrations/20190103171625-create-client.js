@@ -4,7 +4,7 @@ module.exports = {
     CREATE TABLE "client" (
       "id" SERIAL, 
       "name" VARCHAR(255) NOT NULL UNIQUE, 
-      "pictureUrl" VARCHAR(255), 
+      "pictureUrl" TEXT, 
       "slackInternalChannel" VARCHAR(255), 
       "slackClientChannel" VARCHAR(255), 
       "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL, 

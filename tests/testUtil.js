@@ -1,5 +1,6 @@
 const assert = require('assert')
 const db = require('../models')
+const Util = require('../util/util')
 
 const {
   User, Organization, Client, Technology, Directive, Review,
@@ -7,12 +8,7 @@ const {
 
 module.exports = {
   randomString(length = 10) {
-    let text = ''
-    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-    for (let i = 0; i < length; i += 1) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length))
-    }
-    return text
+    return Util.randomString(length)
   },
   validateSchema(object, schema) {
     const objectKeys = Object.keys(object).sort()
@@ -33,7 +29,7 @@ module.exports = {
       done()
     }
   },
-  buildTestOrganization() {
+  async buildTestOrganization() {
     return Organization.build({
       name: this.randomString(),
       status: 'APPROVED',
@@ -45,7 +41,8 @@ module.exports = {
     }, { include: ['domains'] })
   },
   async createTestOrganization() {
-    return this.buildTestOrganization().save()
+    const org = await this.buildTestOrganization()
+    return org.save()
   },
   async buildTestUser() {
     const organization = await this.createTestOrganization()
@@ -80,7 +77,18 @@ module.exports = {
   },
   async createTestClient() {
     const client = await this.buildTestClient()
-    return client.save()
+    await client.save()
+
+    const u1 = await this.createTestUser()
+    const u2 = await this.createTestUser()
+
+    const t1 = await this.createTestTechnology()
+    const t2 = await this.createTestTechnology()
+
+    await client.setPrincipals([u1, u2])
+    await client.setTechnologies([t1, t2])
+
+    return client
   },
   async buildTestTechnology() {
     const organization = await this.createTestOrganization()
@@ -99,7 +107,8 @@ module.exports = {
     const organization = await this.createTestOrganization()
 
     return Directive.build({
-      description: this.randomString(),
+      title: this.randomString(),
+      subtitle: this.randomString(),
       organizationId: organization.id,
     }, { })
   },
@@ -120,6 +129,37 @@ module.exports = {
   },
   async createTestReview() {
     const review = await this.buildTestReview()
+    await review.save()
+
+    const dir1 = await this.createTestDirective()
+    const dir2 = await this.createTestDirective()
+    const dir3 = await this.createTestDirective()
+
+    const ps = []
+    ps.push(review.addDirective(dir1, {
+      through: {
+        compliant: true,
+        notes: 'Note 1',
+      },
+    }))
+
+    ps.push(review.addDirective(dir2, {
+      through: {
+        compliant: false,
+        notes: 'Note 2',
+      },
+    }))
+
+    ps.push(review.addDirective(dir3, {
+      through: {
+        compliant: true,
+        notes: 'Note 3',
+      },
+    }))
+
+    await Promise.all(ps)
+    review.updateScore(await review.getDirectives())
+
     return review.save()
   },
 }

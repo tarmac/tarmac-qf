@@ -28,15 +28,13 @@ describe('Client Model', () => {
     })
     const user1 = await Util.createTestUser()
     const user2 = await Util.createTestUser()
-    await client.addPrincipals(user1)
-    await client.addPrincipals(user2)
+    await client.setPrincipals([user1, user2])
 
     const tech1 = await Util.createTestTechnology()
     const tech2 = await Util.createTestTechnology()
 
 
-    await client.addTechnologies(tech1)
-    await client.addTechnologies(tech2)
+    await client.setTechnologies([tech1, tech2])
     await client.save()
 
     dbClient = await Client.findOne({

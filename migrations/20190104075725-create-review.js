@@ -3,7 +3,7 @@ module.exports = {
     return queryInterface.sequelize.query(`
     CREATE TABLE "review" (
       "id" SERIAL, 
-      "score" INTEGER, 
+      "score" DECIMAL, 
       "trend" VARCHAR(255), 
       "reviewDate" TIMESTAMP WITH TIME ZONE, 
       "link" VARCHAR(255), 

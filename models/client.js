@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     pictureUrl: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       validate: {
         notEmpty: true,
       },

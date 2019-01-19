@@ -3,7 +3,7 @@ module.exports = {
     return queryInterface.sequelize.query(`
     CREATE TABLE "review_directive" (
       "compliant" BOOLEAN, 
-      "notes" VARCHAR(255), 
+      "notes" TEXT, 
       "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL, 
       "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL, 
       "reviewId" INTEGER REFERENCES "review" ("id") ON DELETE CASCADE ON UPDATE CASCADE, 
