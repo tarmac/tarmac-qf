@@ -28,6 +28,7 @@ describe('Review Model', () => {
     })
     const dir1 = await Util.createTestDirective()
     const dir2 = await Util.createTestDirective()
+    await review.setDirectives([])
     await review.addDirectives(dir1, { through: { notes: 'A note', compliant: true } })
     await review.addDirectives(dir2, { through: { notes: 'Other note', compliant: false } })
     await review.save()
@@ -46,6 +47,44 @@ describe('Review Model', () => {
     expect(directives.length).toBe(2)
     expect(directives.map(d => d.id).sort()).toEqual([dir1.id, dir2.id].sort())
 
+    done()
+  })
+
+  test('Review is calculated with directives scores', async (done) => {
+    const review = await Util.createTestReview()
+    const dir1 = await Util.createTestDirective()
+    const dir2 = await Util.createTestDirective()
+    const dir3 = await Util.createTestDirective()
+
+    // Reset review directives
+    await review.setDirectives([])
+
+    const ps = []
+    ps.push(review.addDirective(dir1, {
+      through: {
+        compliant: true,
+        notes: 'Note 1',
+      },
+    }))
+
+    ps.push(review.addDirective(dir2, {
+      through: {
+        compliant: false,
+        notes: 'Note 2',
+      },
+    }))
+
+    ps.push(review.addDirective(dir3, {
+      through: {
+        compliant: true,
+        notes: 'Note 3',
+      },
+    }))
+
+    await Promise.all(ps)
+    review.updateScore(await review.getDirectives())
+
+    expect(review.score).toBe(((5 + 5 + 1) / 3))
     done()
   })
 })

@@ -1,12 +1,14 @@
 module.exports = (sequelize, DataTypes) => {
   const Directive = sequelize.define('Directive', {
-    description: {
-      type: DataTypes.STRING,
-      unique: true,
+    title: {
+      type: DataTypes.TEXT,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
+    },
+    subtitle: {
+      type: DataTypes.TEXT,
     },
   }, {
     tableName: 'directive',

@@ -8,12 +8,14 @@ module.exports = {
       "email" VARCHAR(255) NOT NULL UNIQUE, 
       "password" VARCHAR(255) NOT NULL, 
       "slackName" VARCHAR(255) NOT NULL, 
+      "pictureUrl" TEXT, 
       "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL, 
       "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL, 
       "deletedAt" TIMESTAMP WITH TIME ZONE, 
       "organizationId" INTEGER NOT NULL REFERENCES "organization" ("id") ON DELETE RESTRICT ON UPDATE CASCADE, 
       PRIMARY KEY ("id")
     );
+    
   `)
   },
   down: (queryInterface, Sequelize) => {

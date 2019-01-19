@@ -12,7 +12,7 @@ afterAll(() => {
 })
 
 describe('Directive Model', () => {
-  const requiredFields = ['description', 'organizationId']
+  const requiredFields = ['title', 'organizationId']
   requiredFields.forEach((field) => {
     test(`Directive should require a ${field}`, async (done) => {
       Util.saveObjectWithoutField(await Util.createTestDirective(), field, done)

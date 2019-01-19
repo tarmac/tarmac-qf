@@ -38,12 +38,14 @@ if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
 
 
 function startListening() {
-  /**
-  * Listen on provided port, on all network interfaces.
-  */
-  app.listen(port, () => {
-    console.log(`Example app listening on port ${port}!`)
-  })
+  if (process.env.NODE_ENV !== 'test') {
+    /**
+    * Listen on provided port, on all network interfaces.
+    */
+    app.listen(port, () => {
+      console.log(`Example app listening on port ${port}!`)
+    })
+  }
 }
 
 module.exports = app

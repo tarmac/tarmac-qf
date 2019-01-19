@@ -45,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     pictureUrl: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       validate: {
         notEmpty: true,
       },
@@ -90,7 +90,6 @@ module.exports = (sequelize, DataTypes) => {
   /* eslint-disable no-param-reassign */
   User.hashPassword = function hashPassword(user, options) {
     const SALT_FACTOR = 10
-    console.log(`Hashing password for user with email ${user.email}`)
     if (!user.changed('password')) {
       return new Promise()
     }
