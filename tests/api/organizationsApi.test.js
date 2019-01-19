@@ -22,9 +22,11 @@ afterAll(() => {
 describe('List Organizations', () => {
   test('respond with json containing a list of all organizations', async (done) => {
     const dbOrg = await Util.createTestOrganization()
+    expect(dbOrg.id).toBeDefined()
+
 
     request(app)
-      .get(apiUrl)
+      .get(`${apiUrl}?limit=${Number.MAX_SAFE_INTEGER}`)
       .expect('Content-Type', /json/)
       .expect(200, (err, res) => {
         expect(err).toBeNull()
@@ -105,39 +107,39 @@ describe('Create Organization', () => {
         done(err)
       })
   })
+})
 
-  describe('Update Organization', () => {
-    test('update organization returns 200 and the organization json', async (done) => {
-      const dbOrg = await Util.createTestOrganization()
-      const json = { name: 'new updated org name' }
+describe('Update Organization', () => {
+  test('update organization returns 200 and the organization json', async (done) => {
+    const dbOrg = await Util.createTestOrganization()
+    const json = { name: 'new updated org name' }
 
-      request(app)
-        .put(`${apiUrl}/${dbOrg.id}`)
-        .send(json)
-        .expect('Content-Type', /json/)
-        .expect(200, (err, res) => {
-          expect(err).toBeNull()
-          Util.validateSchema(res.body, organizationSchema)
-          expect(res.body.id).toEqual(dbOrg.id)
-          expect(res.body.name).toEqual(json.name)
-          done(err)
-        })
-    })
+    request(app)
+      .put(`${apiUrl}/${dbOrg.id}`)
+      .send(json)
+      .expect('Content-Type', /json/)
+      .expect(200, (err, res) => {
+        expect(err).toBeNull()
+        Util.validateSchema(res.body, organizationSchema)
+        expect(res.body.id).toEqual(dbOrg.id)
+        expect(res.body.name).toEqual(json.name)
+        done(err)
+      })
   })
+})
 
-  describe('Delete Organization', () => {
-    test('delete organization returns 200 and the organization is not returned ', async (done) => {
-      const dbOrg = await Util.createTestOrganization()
+describe('Delete Organization', () => {
+  test('delete organization returns 200 and the organization is not returned ', async (done) => {
+    const dbOrg = await Util.createTestOrganization()
 
-      const res = await request(app)
-        .delete(`${apiUrl}/${dbOrg.id}`)
-      expect(res.statusCode).toBe(200)
+    const res = await request(app)
+      .delete(`${apiUrl}/${dbOrg.id}`)
+    expect(res.statusCode).toBe(200)
 
-      const res2 = await request(app)
-        .get(`${apiUrl}/${dbOrg.id}`)
-      expect(res2.statusCode).toBe(404)
+    const res2 = await request(app)
+      .get(`${apiUrl}/${dbOrg.id}`)
+    expect(res2.statusCode).toBe(404)
 
-      done()
-    })
+    done()
   })
 })
