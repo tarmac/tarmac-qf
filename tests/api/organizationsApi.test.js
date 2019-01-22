@@ -103,7 +103,6 @@ describe('Create Organization', () => {
       .send(organization)
       .expect('Content-Type', /json/)
       .expect(422, (err, res) => {
-        console.log(err)
         done(err)
       })
   })

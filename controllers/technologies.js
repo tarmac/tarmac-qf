@@ -14,6 +14,9 @@ exports.list = async (req, res, next) => {
     // },
     offset,
     limit,
+    order: [
+      ['name', 'ASC'],
+    ],
   })
   res.json(techs)
 }
