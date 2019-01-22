@@ -15,7 +15,13 @@ module.exports = (sequelize, DataTypes) => {
     paranoid: true,
   })
   OrganizationDomain.associate = (models) => {
-
+    models.Directive.belongsTo(models.Organization, {
+      onDelete: 'RESTRICT',
+      foreignKey: {
+        name: 'organizationId',
+        allowNull: false,
+      },
+    })
   }
 
   return OrganizationDomain

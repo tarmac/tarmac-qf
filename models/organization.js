@@ -43,17 +43,5 @@ module.exports = (sequelize, DataTypes) => {
     )
   }
 
-  // This would override the toJSON to exclude internal attributes
-  // Organization.prototype.toJSON = function toJSON() {
-  //   const exclude = ['createdAt', 'updatedAt', 'deletedAt']
-  //   console.log(this.dataValues)
-  //   const values = Object.assign({}, this.dataValues)
-  //   console.log(values)
-  //   exclude.forEach((key) => {
-  //     delete values[key]
-  //   })
-  //   return values
-  // }
-
   return Organization
 }

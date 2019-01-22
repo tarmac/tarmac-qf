@@ -11,6 +11,9 @@ exports.list = async (req, res, next) => {
     distinct: true,
     offset,
     limit,
+    order: [
+      ['name', 'ASC'],
+    ],
   })
   res.json(organizations)
 }
