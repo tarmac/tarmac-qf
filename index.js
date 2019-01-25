@@ -28,14 +28,12 @@ app.get('/', (req, res) => {
 
 app.use('/api', apiRouter)
 
-if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
+// Resets the DB and generates tables
+function resetDbAndStartListening() {
   db.sequelize.sync({ force: true }).then(() => {
     startListening()
   })
-} else {
-  startListening()
 }
-
 
 function startListening() {
   if (process.env.NODE_ENV !== 'test') {
@@ -47,5 +45,8 @@ function startListening() {
     })
   }
 }
+
+// Start express server
+startListening()
 
 module.exports = app

@@ -14,6 +14,7 @@ const clientSchema = {
   slackClientChannel: '',
   principals: '',
   technologies: '',
+  reviews: '',
   organizationId: '',
 }
 

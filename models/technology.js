@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes) => {
   const Technology = sequelize.define('Technology', {
     name: {
       type: DataTypes.STRING,
-      unique: true,
+      unique: true, // TODO This should be unique per organization (same for directives, clients)
       allowNull: false,
       validate: {
         notEmpty: true,

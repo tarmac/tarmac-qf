@@ -44,6 +44,16 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
     })
+
+    models.Client.hasMany(
+      models.Review, {
+        as: 'reviews',
+        foreignKey: {
+          name: 'clientId',
+          allowNull: false,
+        },
+      },
+    )
   }
   return Client
 }

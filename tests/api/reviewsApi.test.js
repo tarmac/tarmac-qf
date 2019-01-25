@@ -81,6 +81,29 @@ describe('View Review', () => {
   })
 })
 
+describe('View Review by Link', () => {
+  test('respond with json with the review', async (done) => {
+    const dbReview = await Util.createTestReview()
+
+    request(app)
+      .get(`/api/reviews/${dbReview.link}`)
+      .expect('Content-Type', /json/)
+      .expect(200, async (err, res) => {
+        expect(err).toBeNull()
+        Util.validateSchema(res.body, reviewSchema)
+        expect(res.body.id).toEqual(dbReview.id)
+        expect(res.body.clientId).toEqual(dbReview.clientId)
+        expect(res.body.directives.length).toBe(3)
+
+        const res2 = await request(app)
+          .get('/review/wrongLink')
+        expect(res2.statusCode).toBe(404)
+
+        done(err)
+      })
+  })
+})
+
 describe('Create Review', () => {
   test('create review returns 201 and the review json', async (done) => {
     const u1 = await Util.createTestUser()
