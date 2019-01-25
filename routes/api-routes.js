@@ -63,6 +63,8 @@ router.route('/clients/:cid/reviews/:id')
   .get(handler(reviews.view))
   .put(handler(reviews.update))
   .delete(handler(reviews.delete))
+router.route('/reviews/:link')
+  .get(handler(reviews.viewByLink))
 
 // Stats
 router.route('/stats')

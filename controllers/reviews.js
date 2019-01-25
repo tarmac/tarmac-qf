@@ -134,6 +134,21 @@ exports.delete = async (req, res, next) => {
   }
 }
 
+// This endpoint should remain public
+exports.viewByLink = async (req, res, next) => {
+  const obj = await Review.findOne({
+    where: {
+      link: req.params.link,
+    },
+    include: includeDirectives(),
+  })
+  if (!obj) {
+    res.boom.notFound('Review not found')
+    return
+  }
+  res.json(obj)
+}
+
 async function findReview(req, res) {
   const obj = await Review.findByPk(req.params.id, {
     include: includeDirectives(),

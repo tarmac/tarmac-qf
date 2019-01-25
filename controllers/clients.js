@@ -1,7 +1,7 @@
 const boom = require('express-boom')
 const Util = require('../util/util')
 const {
-  Client, User, Technology, sequelize,
+  Client, User, Technology, Review, Directive, sequelize,
 } = require('../models')
 
 
@@ -9,7 +9,7 @@ exports.list = async (req, res, next) => {
   const offset = req.query.offset || 0
   const limit = req.query.limit || 25
   const clients = await Client.findAndCountAll({
-    include: includePrincipalsAndTechnologies(),
+    include: includePrincipalsAndTechnologiesAndReviews(),
     distinct: true,
     offset,
     limit,
@@ -39,7 +39,7 @@ exports.create = async (req, res, next) => {
     }
 
     client = await Client.findByPk(client.id, {
-      include: includePrincipalsAndTechnologies(),
+      include: includePrincipalsAndTechnologiesAndReviews(),
       transaction,
     })
     res.status(201).send(client)
@@ -78,7 +78,7 @@ exports.update = async (req, res, next) => {
       await client.save({ transaction })
 
       client = await Client.findByPk(client.id, {
-        include: includePrincipalsAndTechnologies(),
+        include: includePrincipalsAndTechnologiesAndReviews(),
         transaction,
       })
       res.status(200).send(client)
@@ -102,7 +102,7 @@ exports.delete = async (req, res, next) => {
 
 async function findClient(req, res) {
   const obj = await Client.findByPk(req.params.id, {
-    include: includePrincipalsAndTechnologies(),
+    include: includePrincipalsAndTechnologiesAndReviews(),
   })
   if (!obj) {
     res.boom.notFound('Client not found')
@@ -118,7 +118,7 @@ function mergeClient(client, fieldMap) {
   return Util.mergeObject(client, keys, fieldMap)
 }
 
-function includePrincipalsAndTechnologies() {
+function includePrincipalsAndTechnologiesAndReviews() {
   return [{
     model: User,
     as: 'principals',
@@ -134,5 +134,23 @@ function includePrincipalsAndTechnologies() {
     through: {
       attributes: [],
     },
+  },
+  /* TODO instead of returning just the list of reviews,
+    the reviews could be a map by month in desc order, like:
+    [
+      [ // Making this a list just in case, currently 1 review per month
+        {review} // current's month review
+      ],
+      [], // missing review
+      [
+        {review} // review from 2 months ago
+      ],
+      ...
+    ]
+    That way it'll be easier for the UI to render the reviews history
+  */
+  {
+    model: Review,
+    as: 'reviews',
   }]
 }
