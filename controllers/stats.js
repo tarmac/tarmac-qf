@@ -1,23 +1,23 @@
 const boom = require('express-boom')
 const Util = require('../util/util')
 const {
-  Client, Technology, sequelize,
+  Project, Technology, sequelize,
 } = require('../models')
 
 
 exports.list = async (req, res, next) => {
-  const clients = await Client.count({
+  const projects = await Project.count({
     where: {
       organizationId: Util.getOrgId(),
     },
   })
 
-  const android = await countClientsByTag(Util.getOrgId(), 'Android')
-  const ios = await countClientsByTag(Util.getOrgId(), 'IOS')
-  const web = await countClientsByTag(Util.getOrgId(), 'Web')
+  const android = await countProjectsByTag(Util.getOrgId(), 'Android')
+  const ios = await countProjectsByTag(Util.getOrgId(), 'IOS')
+  const web = await countProjectsByTag(Util.getOrgId(), 'Web')
 
   const result = {
-    clients,
+    projects,
     android,
     ios,
     web,
@@ -25,8 +25,8 @@ exports.list = async (req, res, next) => {
   res.json(result)
 }
 
-async function countClientsByTag(orgId, tag) {
-  return Client.count({
+async function countProjectsByTag(orgId, tag) {
+  return Project.count({
     where: {
       organizationId: orgId,
     },

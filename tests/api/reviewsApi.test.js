@@ -3,12 +3,12 @@ const db = require('../../models')
 const app = require('../../index')
 const Util = require('../testUtil.js')
 
-const apiUrlClients = '/api/clients'
+const apiUrlProjects = '/api/projects'
 const reviewSchema = {
   id: '',
   reviewDate: '',
   reviewerId: '',
-  clientId: '',
+  projectId: '',
   directives: '',
   link: '',
   score: '',
@@ -30,13 +30,13 @@ afterAll(() => {
 
 })
 
-describe('List Reviews for a client', () => {
+describe('List Reviews for a project', () => {
   test('respond with json containing a list of all reviews', async (done) => {
     const dbReview = await Util.createTestReview()
     expect(dbReview.id).toBeDefined()
 
     request(app)
-      .get(`${apiUrlClients}/${dbReview.clientId}/reviews`)
+      .get(`${apiUrlProjects}/${dbReview.projectId}/reviews`)
       .expect('Content-Type', /json/)
       .expect(200, (err, res) => {
         expect(err).toBeNull()
@@ -59,13 +59,13 @@ describe('View Review', () => {
 
 
     request(app)
-      .get(`${apiUrlClients}/${dbReview.clientId}/reviews/${dbReview.id}`)
+      .get(`${apiUrlProjects}/${dbReview.projectId}/reviews/${dbReview.id}`)
       .expect('Content-Type', /json/)
       .expect(200, (err, res) => {
         expect(err).toBeNull()
         Util.validateSchema(res.body, reviewSchema)
         expect(res.body.id).toEqual(dbReview.id)
-        expect(res.body.clientId).toEqual(dbReview.clientId)
+        expect(res.body.projectId).toEqual(dbReview.projectId)
 
         expect(res.body.directives.length).toBe(3)
         Util.validateSchema(res.body.directives[0], directiveSchema)
@@ -92,7 +92,7 @@ describe('View Review by Link', () => {
         expect(err).toBeNull()
         Util.validateSchema(res.body, reviewSchema)
         expect(res.body.id).toEqual(dbReview.id)
-        expect(res.body.clientId).toEqual(dbReview.clientId)
+        expect(res.body.projectId).toEqual(dbReview.projectId)
         expect(res.body.directives.length).toBe(3)
 
         const res2 = await request(app)
@@ -107,12 +107,12 @@ describe('View Review by Link', () => {
 describe('Create Review', () => {
   test('create review returns 201 and the review json', async (done) => {
     const u1 = await Util.createTestUser()
-    const c1 = await Util.createTestClient()
+    const c1 = await Util.createTestProject()
     const d1 = await Util.createTestDirective()
 
     const review = {
       reviewerId: u1.id,
-      clientId: c1.id,
+      projectId: c1.id,
       reviewDate: new Date(),
       directives: [
         {
@@ -123,14 +123,14 @@ describe('Create Review', () => {
       ],
     }
     request(app)
-      .post(`${apiUrlClients}/${c1.id}/reviews`)
+      .post(`${apiUrlProjects}/${c1.id}/reviews`)
       .send(review)
       .expect('Content-Type', /json/)
       .expect(201, (err, res) => {
         expect(err).toBeNull()
         Util.validateSchema(res.body, reviewSchema)
         expect(res.body.id).not.toBeLessThan(1)
-        expect(res.body.clientId).toEqual(c1.id)
+        expect(res.body.projectId).toEqual(c1.id)
         expect(parseInt(res.body.score, 10)).toBe(5)
         expect(res.body.directives.length).toBe(1)
         expect(res.body.directives[0].id).toEqual(d1.id)
@@ -161,7 +161,7 @@ describe('Update Review', () => {
     }
 
     request(app)
-      .put(`${apiUrlClients}/${dbReview.clientId}/reviews/${dbReview.id}`)
+      .put(`${apiUrlProjects}/${dbReview.projectId}/reviews/${dbReview.id}`)
       .send(json)
       .expect('Content-Type', /json/)
       .expect(200, (err, res) => {
@@ -184,11 +184,11 @@ describe('Delete Review', () => {
     const dbReview = await Util.createTestReview()
 
     const res = await request(app)
-      .delete(`${apiUrlClients}/${dbReview.clientId}/reviews/${dbReview.id}`)
+      .delete(`${apiUrlProjects}/${dbReview.projectId}/reviews/${dbReview.id}`)
     expect(res.statusCode).toBe(200)
 
     const res2 = await request(app)
-      .delete(`${apiUrlClients}/${dbReview.clientId}/reviews/${dbReview.id}`)
+      .delete(`${apiUrlProjects}/${dbReview.projectId}/reviews/${dbReview.id}`)
     expect(res2.statusCode).toBe(404)
 
     done()

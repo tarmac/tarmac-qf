@@ -1,14 +1,14 @@
 const boom = require('express-boom')
 const Util = require('../util/util')
 const {
-  Client, User, Technology, Review, Directive, sequelize,
+  Project, User, Technology, Review, Directive, sequelize,
 } = require('../models')
 
 
 exports.list = async (req, res, next) => {
   const offset = req.query.offset || 0
   const limit = req.query.limit || 25
-  const clients = await Client.findAndCountAll({
+  const projects = await Project.findAndCountAll({
     include: includePrincipalsAndTechnologiesAndReviews(),
     distinct: true,
     offset,
@@ -17,7 +17,7 @@ exports.list = async (req, res, next) => {
       ['name', 'ASC'],
     ],
   })
-  res.json(clients)
+  res.json(projects)
 }
 
 exports.create = async (req, res, next) => {
@@ -26,23 +26,23 @@ exports.create = async (req, res, next) => {
 
   try {
     transaction = await sequelize.transaction()
-    const fields = mergeClient({}, body)
+    const fields = mergeProject({}, body)
     fields.organizationId = Util.getOrgId()
     // TODO validate ownerId, teamLeadId, principals and technologies exist
-    let client = await Client.create(fields, { transaction })
+    let project = await Project.create(fields, { transaction })
 
     if (body.principals) {
-      await client.setPrincipals(Util.jsonObjectsToIdsArray(body.principals), { transaction })
+      await project.setPrincipals(Util.jsonObjectsToIdsArray(body.principals), { transaction })
     }
     if (body.technologies) {
-      await client.setTechnologies(Util.jsonObjectsToIdsArray(body.technologies), { transaction })
+      await project.setTechnologies(Util.jsonObjectsToIdsArray(body.technologies), { transaction })
     }
 
-    client = await Client.findByPk(client.id, {
+    project = await Project.findByPk(project.id, {
       include: includePrincipalsAndTechnologiesAndReviews(),
       transaction,
     })
-    res.status(201).send(client)
+    res.status(201).send(project)
 
     await transaction.commit()
   } catch (err) {
@@ -53,9 +53,9 @@ exports.create = async (req, res, next) => {
 }
 
 exports.view = async (req, res, next) => {
-  const client = await findClient(req, res)
-  if (client) {
-    res.json(client)
+  const project = await findProject(req, res)
+  if (project) {
+    res.json(project)
   }
 }
 
@@ -65,23 +65,26 @@ exports.update = async (req, res, next) => {
 
   try {
     transaction = await sequelize.transaction()
-    let client = await findClient(req, res)
-    if (client) {
+    let project = await findProject(req, res)
+    if (project) {
       // TODO validate ownerId, teamLeadId, principals and technologies exist
-      mergeClient(client, req.body)
+      mergeProject(project, req.body)
       if (body.principals) {
-        await client.setPrincipals(Util.jsonObjectsToIdsArray(body.principals), { transaction })
+        await project.setPrincipals(Util.jsonObjectsToIdsArray(body.principals), { transaction })
       }
       if (body.technologies) {
-        await client.setTechnologies(Util.jsonObjectsToIdsArray(body.technologies), { transaction })
+        await project.setTechnologies(
+          Util.jsonObjectsToIdsArray(body.technologies),
+          { transaction },
+        )
       }
-      await client.save({ transaction })
+      await project.save({ transaction })
 
-      client = await Client.findByPk(client.id, {
+      project = await Project.findByPk(project.id, {
         include: includePrincipalsAndTechnologiesAndReviews(),
         transaction,
       })
-      res.status(200).send(client)
+      res.status(200).send(project)
 
       await transaction.commit()
     }
@@ -93,29 +96,29 @@ exports.update = async (req, res, next) => {
 }
 
 exports.delete = async (req, res, next) => {
-  const obj = await findClient(req, res)
+  const obj = await findProject(req, res)
   if (obj) {
     await obj.destroy()
     res.status(200).send()
   }
 }
 
-async function findClient(req, res) {
-  const obj = await Client.findByPk(req.params.id, {
+async function findProject(req, res) {
+  const obj = await Project.findByPk(req.params.id, {
     include: includePrincipalsAndTechnologiesAndReviews(),
   })
   if (!obj) {
-    res.boom.notFound('Client not found')
+    res.boom.notFound('Project not found')
   }
   return obj
 }
 
-function mergeClient(client, fieldMap) {
+function mergeProject(project, fieldMap) {
   const keys = [
     'name', 'ownerId', 'teamLeadId', 'pictureUrl',
     'slackInternalChannel', 'slackClientChannel',
   ]
-  return Util.mergeObject(client, keys, fieldMap)
+  return Util.mergeObject(project, keys, fieldMap)
 }
 
 function includePrincipalsAndTechnologiesAndReviews() {

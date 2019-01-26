@@ -3,7 +3,7 @@ const db = require('../models')
 const Util = require('../util/util')
 
 const {
-  User, Organization, Client, Technology, Directive, Review,
+  User, Organization, Project, Technology, Directive, Review,
 } = db
 
 module.exports = {
@@ -60,12 +60,12 @@ module.exports = {
     const user = await this.buildTestUser()
     return user.save()
   },
-  async buildTestClient() {
+  async buildTestProject() {
     const organization = await this.createTestOrganization()
     const user1 = await this.createTestUser()
     const user2 = await this.createTestUser()
 
-    return Client.build({
+    return Project.build({
       name: this.randomString(),
       pictureUrl: this.randomString(),
       slackInternalChannel: this.randomString(),
@@ -75,9 +75,9 @@ module.exports = {
       teamLeadId: user2.id,
     }, { })
   },
-  async createTestClient() {
-    const client = await this.buildTestClient()
-    await client.save()
+  async createTestProject() {
+    const project = await this.buildTestProject()
+    await project.save()
 
     const u1 = await this.createTestUser()
     const u2 = await this.createTestUser()
@@ -85,10 +85,10 @@ module.exports = {
     const t1 = await this.createTestTechnology()
     const t2 = await this.createTestTechnology()
 
-    await client.setPrincipals([u1, u2])
-    await client.setTechnologies([t1, t2])
+    await project.setPrincipals([u1, u2])
+    await project.setTechnologies([t1, t2])
 
-    return client
+    return project
   },
   async buildTestTechnology() {
     const organization = await this.createTestOrganization()
@@ -117,14 +117,14 @@ module.exports = {
     return dir.save()
   },
   async buildTestReview() {
-    const client = await this.createTestClient()
+    const project = await this.createTestProject()
 
     return Review.build({
       score: 5,
       trend: 'UP',
       reviewDate: Date.now(),
       link: this.randomString(),
-      clientId: client.id,
+      projectId: project.id,
     }, { })
   },
   async createTestReview() {

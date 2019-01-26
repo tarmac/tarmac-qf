@@ -19,7 +19,7 @@ describe('Directive Model', () => {
     })
   })
 
-  test('Client is saved OK with all the fields', async (done) => {
+  test('Project is saved OK with all the fields', async (done) => {
     const dir = await Util.createTestDirective()
     expect(dir.id).toBeDefined()
     const dbDir = await Directive.findOne({ where: { id: dir.id } })

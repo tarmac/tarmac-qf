@@ -19,7 +19,7 @@ describe('Technology Model', () => {
     })
   })
 
-  test('Client is saved OK with all the fields', async (done) => {
+  test('Project is saved OK with all the fields', async (done) => {
     const tech = await Util.createTestTechnology()
     expect(tech.id).toBeDefined()
     const dbTech = await Technology.findOne({ where: { id: tech.id } })

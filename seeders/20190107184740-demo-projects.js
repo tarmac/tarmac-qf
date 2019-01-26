@@ -1,7 +1,7 @@
 const models = require('../models')
 
 const {
-  Organization, Client, User, Technology,
+  Organization, Project, User, Technology,
 } = models
 
 module.exports = {
@@ -16,7 +16,7 @@ module.exports = {
     const android = await Technology.findOne({ where: { name: 'Android' } })
     const node = await Technology.findOne({ where: { name: 'Node.js' } })
 
-    const client = Client.build({
+    const project = Project.build({
       name: 'Trusted Herd',
       organizationId: organization.id,
       ownerId: tony.id,
@@ -24,12 +24,12 @@ module.exports = {
       slackInternalChannel: 'trusted-herd-internal',
       slackClientChannel: 'trusted-herd',
     })
-    await client.save()
-    await client.setPrincipals([bosio, juan])
-    await client.setTechnologies([android, node])
+    await project.save()
+    await project.setPrincipals([bosio, juan])
+    await project.setTechnologies([android, node])
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete('client', null, {})
+    return queryInterface.bulkDelete('project', null, {})
   },
 }

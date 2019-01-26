@@ -1,7 +1,7 @@
 const boom = require('express-boom')
 const Util = require('../util/util')
 const {
-  Review, Client, Directive, User, Technology, sequelize,
+  Review, Project, Directive, User, Technology, sequelize,
 } = require('../models')
 
 
@@ -10,7 +10,7 @@ exports.list = async (req, res, next) => {
   const limit = req.query.limit || 25
   const reviews = await Review.findAndCountAll({
     where: {
-      clientId: req.params.cid,
+      projectId: req.params.cid,
     },
     include: includeDirectives(),
     distinct: true,
@@ -27,8 +27,8 @@ exports.create = async (req, res, next) => {
   try {
     transaction = await sequelize.transaction()
     const fields = mergeReview({}, body)
-    fields.clientId = req.params.cid
-    // TODO validate clientId and directives exist
+    fields.projectId = req.params.cid
+    // TODO validate projectId and directives exist
     let review = await Review.create(fields, { transaction })
 
     if (body.directives) {
@@ -64,9 +64,9 @@ exports.create = async (req, res, next) => {
 }
 
 exports.view = async (req, res, next) => {
-  const client = await findReview(req, res)
-  if (client) {
-    res.json(client)
+  const project = await findReview(req, res)
+  if (project) {
+    res.json(project)
   }
 }
 
@@ -161,7 +161,7 @@ async function findReview(req, res) {
 
 function mergeReview(review, fieldMap) {
   const keys = [
-    'reviewDate', 'reviewerId', 'clientId',
+    'reviewDate', 'reviewerId', 'projectId',
   ]
   return Util.mergeObject(review, keys, fieldMap)
 }

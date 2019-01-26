@@ -1,6 +1,6 @@
 const db = require('../../models')
 
-const { Review, Client } = db
+const { Review, Project } = db
 const Util = require('../testUtil.js')
 
 beforeAll(async () => {
@@ -12,7 +12,7 @@ afterAll(() => {
 })
 
 describe('Review Model', () => {
-  const requiredFields = ['clientId']
+  const requiredFields = ['projectId']
   requiredFields.forEach((field) => {
     test(`Review should require a ${field}`, async (done) => {
       Util.saveObjectWithoutField(await Util.buildTestReview(), field, done)

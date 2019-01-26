@@ -37,10 +37,10 @@ module.exports = (sequelize, DataTypes) => {
       },
     })
 
-    models.Review.belongsTo(models.Client, {
+    models.Review.belongsTo(models.Project, {
       onDelete: 'RESTRICT',
       foreignKey: {
-        name: 'clientId',
+        name: 'projectId',
         allowNull: false,
       },
     })
