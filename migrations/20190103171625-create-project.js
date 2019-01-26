@@ -1,7 +1,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.sequelize.query(`
-    CREATE TABLE "client" (
+    CREATE TABLE "project" (
       "id" SERIAL, 
       "name" VARCHAR(255) NOT NULL UNIQUE, 
       "pictureUrl" TEXT, 
@@ -19,6 +19,6 @@ module.exports = {
   `)
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('client')
+    return queryInterface.dropTable('project')
   },
 }

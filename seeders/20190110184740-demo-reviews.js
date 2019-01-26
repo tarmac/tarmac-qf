@@ -1,20 +1,20 @@
 const models = require('../models')
 
 const {
-  Review, Client, User, Directive, ReviewDirective,
+  Review, Project, User, Directive, ReviewDirective,
 } = models
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    const client = await Client.findOne({ where: { name: 'Trusted Herd' } })
+    const project = await Project.findOne({ where: { name: 'Trusted Herd' } })
     const directives = await Directive.findAll({
       where: {
-        organizationId: client.organizationId,
+        organizationId: project.organizationId,
       },
     })
 
     const review = await Review.create({
-      clientId: client.id,
+      projectId: project.id,
       reviewDate: new Date(),
     }, { individualHooks: true })
 
@@ -34,6 +34,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete('client', null, {})
+    return queryInterface.bulkDelete('project', null, {})
   },
 }

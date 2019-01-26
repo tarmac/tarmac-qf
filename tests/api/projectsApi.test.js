@@ -3,8 +3,8 @@ const db = require('../../models')
 const app = require('../../index')
 const Util = require('../testUtil.js')
 
-const apiUrl = '/api/clients'
-const clientSchema = {
+const apiUrl = '/api/projects'
+const projectSchema = {
   id: '',
   name: '',
   ownerId: '',
@@ -38,9 +38,9 @@ afterAll(() => {
 
 })
 
-describe('List Clients', () => {
-  test('respond with json containing a list of all clients', async (done) => {
-    const dbCli = await Util.createTestClient()
+describe('List Projects', () => {
+  test('respond with json containing a list of all projects', async (done) => {
+    const dbCli = await Util.createTestProject()
     expect(dbCli.id).toBeDefined()
 
     request(app)
@@ -52,7 +52,7 @@ describe('List Clients', () => {
         const list = res.body.rows
         expect(res.body.count).not.toBeLessThan(1)
         expect(list.length).not.toBeLessThan(1)
-        Util.validateSchema(list[0], clientSchema)
+        Util.validateSchema(list[0], projectSchema)
         const result = list.find(cli => cli.id === dbCli.id)
         expect(result).not.toBeUndefined()
         done(err)
@@ -60,9 +60,9 @@ describe('List Clients', () => {
   })
 })
 
-describe('View Client', () => {
-  test('respond with json with the client', async (done) => {
-    const dbCli = await Util.createTestClient()
+describe('View Project', () => {
+  test('respond with json with the project', async (done) => {
+    const dbCli = await Util.createTestProject()
     const principals = await dbCli.getPrincipals()
     const techs = await dbCli.getTechnologies()
 
@@ -72,7 +72,7 @@ describe('View Client', () => {
       .expect('Content-Type', /json/)
       .expect(200, (err, res) => {
         expect(err).toBeNull()
-        Util.validateSchema(res.body, clientSchema)
+        Util.validateSchema(res.body, projectSchema)
         expect(res.body.id).toEqual(dbCli.id)
         expect(res.body.name).toEqual(dbCli.name)
 
@@ -90,12 +90,12 @@ describe('View Client', () => {
   })
 })
 
-describe('Create Client', () => {
-  test('create client returns 201 and the client json', async (done) => {
+describe('Create Project', () => {
+  test('create project returns 201 and the project json', async (done) => {
     const u1 = await Util.createTestUser()
     const t1 = await Util.createTestTechnology()
 
-    const client = {
+    const project = {
       name: 'create cli name',
       ownerId: u1.id,
       teamLeadId: u1.id,
@@ -108,13 +108,13 @@ describe('Create Client', () => {
     }
     request(app)
       .post(apiUrl)
-      .send(client)
+      .send(project)
       .expect('Content-Type', /json/)
       .expect(201, (err, res) => {
         expect(err).toBeNull()
-        Util.validateSchema(res.body, clientSchema)
+        Util.validateSchema(res.body, projectSchema)
         expect(res.body.id).not.toBeLessThan(1)
-        expect(res.body.name).toEqual(client.name)
+        expect(res.body.name).toEqual(project.name)
         expect(res.body.principals.length).toBe(1)
         expect(res.body.principals[0].id).toEqual(u1.id)
         expect(res.body.technologies.length).toBe(1)
@@ -123,18 +123,18 @@ describe('Create Client', () => {
       })
   })
 
-  test('create client with existing name fails and returns 422', async (done) => {
-    const dbCli = await Util.createTestClient()
+  test('create project with existing name fails and returns 422', async (done) => {
+    const dbCli = await Util.createTestProject()
     const u1 = await Util.createTestUser()
 
-    const client = {
+    const project = {
       name: dbCli.name,
       ownerId: u1.id,
       teamLeadId: u1.id,
     }
     request(app)
       .post(apiUrl)
-      .send(client)
+      .send(project)
       .expect('Content-Type', /json/)
       .expect(422, (err, res) => {
         console.log(err)
@@ -143,9 +143,9 @@ describe('Create Client', () => {
   })
 })
 
-describe('Update Client', () => {
-  test('update client returns 200 and the client json', async (done) => {
-    const dbCli = await Util.createTestClient()
+describe('Update Project', () => {
+  test('update project returns 200 and the project json', async (done) => {
+    const dbCli = await Util.createTestProject()
     const u1 = await Util.createTestUser()
     const t1 = await Util.createTestTechnology()
 
@@ -165,7 +165,7 @@ describe('Update Client', () => {
       .expect('Content-Type', /json/)
       .expect(200, (err, res) => {
         expect(err).toBeNull()
-        Util.validateSchema(res.body, clientSchema)
+        Util.validateSchema(res.body, projectSchema)
         expect(res.body.id).toEqual(dbCli.id)
         expect(res.body.name).toEqual(json.name)
         expect(res.body.principals.length).toBe(1)
@@ -177,9 +177,9 @@ describe('Update Client', () => {
   })
 })
 
-describe('Delete Client', () => {
-  test('delete client returns 200 and the client is not returned ', async (done) => {
-    const dbCli = await Util.createTestClient()
+describe('Delete Project', () => {
+  test('delete project returns 200 and the project is not returned ', async (done) => {
+    const dbCli = await Util.createTestProject()
 
     const res = await request(app)
       .delete(`${apiUrl}/${dbCli.id}`)

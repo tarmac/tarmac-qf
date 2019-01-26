@@ -11,7 +11,7 @@ module.exports = {
       "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL, 
       "deletedAt" TIMESTAMP WITH TIME ZONE, 
       "reviewerId" INTEGER REFERENCES "users" ("id") ON DELETE RESTRICT ON UPDATE CASCADE, 
-      "clientId" INTEGER NOT NULL REFERENCES "client" ("id") ON DELETE RESTRICT ON UPDATE CASCADE, 
+      "projectId" INTEGER NOT NULL REFERENCES "project" ("id") ON DELETE RESTRICT ON UPDATE CASCADE, 
       PRIMARY KEY ("id")
     );    
   `)

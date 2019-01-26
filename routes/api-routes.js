@@ -2,7 +2,7 @@ const express = require('express')
 const boom = require('express-boom')
 
 const organizations = require('../controllers/organizations')
-const clients = require('../controllers/clients')
+const projects = require('../controllers/projects')
 const technologies = require('../controllers/technologies')
 const directives = require('../controllers/directives')
 const reviews = require('../controllers/reviews')
@@ -23,15 +23,15 @@ router.route('/organizations/:id')
   .put(handler(organizations.update))
   .delete(handler(organizations.delete))
 
-// Clients
-router.route('/clients')
-  .get((handler(clients.list)))
-  .post(handler(clients.create))
+// Projects
+router.route('/projects')
+  .get((handler(projects.list)))
+  .post(handler(projects.create))
 
-router.route('/clients/:id')
-  .get(handler(clients.view))
-  .put(handler(clients.update))
-  .delete(handler(clients.delete))
+router.route('/projects/:id')
+  .get(handler(projects.view))
+  .put(handler(projects.update))
+  .delete(handler(projects.delete))
 
 // Technologies
 router.route('/technologies')
@@ -55,11 +55,11 @@ router.route('/directives/:id')
   .delete(handler(directives.delete))
 
 // Reviews
-router.route('/clients/:cid/reviews')
+router.route('/projects/:cid/reviews')
   .get((handler(reviews.list)))
   .post(handler(reviews.create))
 
-router.route('/clients/:cid/reviews/:id')
+router.route('/projects/:cid/reviews/:id')
   .get(handler(reviews.view))
   .put(handler(reviews.update))
   .delete(handler(reviews.delete))

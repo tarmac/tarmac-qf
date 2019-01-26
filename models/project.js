@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  const Client = sequelize.define('Client', {
+  const Project = sequelize.define('Project', {
     name: {
       type: DataTypes.STRING,
       unique: true,
@@ -18,10 +18,10 @@ module.exports = (sequelize, DataTypes) => {
     slackInternalChannel: DataTypes.STRING,
     slackClientChannel: DataTypes.STRING,
   }, {
-    tableName: 'client',
+    tableName: 'project',
   })
-  Client.associate = (models) => {
-    models.Client.belongsTo(models.Organization, {
+  Project.associate = (models) => {
+    models.Project.belongsTo(models.Organization, {
       onDelete: 'RESTRICT',
       foreignKey: {
         name: 'organizationId',
@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     })
 
-    models.Client.belongsTo(models.User, {
+    models.Project.belongsTo(models.User, {
       onDelete: 'RESTRICT',
       foreignKey: {
         name: 'ownerId',
@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     })
 
-    models.Client.belongsTo(models.User, {
+    models.Project.belongsTo(models.User, {
       onDelete: 'RESTRICT',
       foreignKey: {
         name: 'teamLeadId',
@@ -45,15 +45,15 @@ module.exports = (sequelize, DataTypes) => {
       },
     })
 
-    models.Client.hasMany(
+    models.Project.hasMany(
       models.Review, {
         as: 'reviews',
         foreignKey: {
-          name: 'clientId',
+          name: 'projectId',
           allowNull: false,
         },
       },
     )
   }
-  return Client
+  return Project
 }
