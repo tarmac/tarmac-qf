@@ -99,3 +99,12 @@ DROP TABLE organization;
 ```
 sequelize db:migrate && sequelize db:seed:all --debug
 ```
+
+### API codes
+
+* 200 - Everytime operation is OK except on create (201)
+* 201 - Create
+* 422 - Validation error
+* 500 - Server internal error
+
+### Steps taken to [create the project](https://gist.github.com/ascuccimarra/f900a637e394a8f005ffa4513eb314ba)
